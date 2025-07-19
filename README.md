@@ -1,4 +1,4 @@
-# 🌸 Iris – Context-Aware AI Assistant (Flask + Ollama)
+# 🧠 Iris – Context-Aware AI Assistant (Flask + Ollama)
 
 **Iris** is a subtle, elegant AI assistant built using Flask, Sentence Transformers, and LangChain.  
 It supports **local LLM inference via Ollama** and context-based Q&A from PDFs.  
