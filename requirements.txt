@@ -1,0 +1,10 @@
+flask
+fitz  
+PyMuPDF
+numpy
+sentence-transformers
+langchain
+chromadb
+transformers
+scikit-learn
+tqdm
