@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <title>Iris – Research Paper Companion</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e2f;
+            color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            width: 60%;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #2b2b3c;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border-radius: 12px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #80cbc4;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        form {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        input[type="file"],
+        input[type="text"] {
+            padding: 12px;
+            width: 60%;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            border: 1px solid #444;
+            background-color: #1c1c2a;
+            color: #eee;
+            transition: border 0.2s ease;
+        }
+
+        input[type="text"]:focus {
+            border-color: #80cbc4;
+            outline: none;
+        }
+
+        input[type="submit"] {
+            padding: 10px 22px;
+            background-color: #10a37f;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: background-color 0.2s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0e8a6a;
+        }
+
+        .chat-box {
+            background-color: #1a1a28;
+            border-radius: 10px;
+            padding: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .chat-entry {
+            margin-bottom: 20px;
+        }
+
+        .user-msg {
+            background-color: #294034;
+            padding: 12px;
+            border-radius: 10px;
+            max-width: 80%;
+            margin-left: auto;
+            margin-right: 0;
+            color: #d2f8dc;
+        }
+
+        .ai-msg {
+            background-color: #2c2c3e;
+            padding: 12px;
+            border-radius: 10px;
+            max-width: 80%;
+            margin-right: auto;
+            margin-left: 0;
+            color: #e0e0e0;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #555;
+            margin: 10px 0;
+        }
+
+        .uploaded-info {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #aaa;
+            font-style: italic;
+        }
+
+        a {
+            color: #80cbc4;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>🧠 Iris – Research Paper Companion</h2>
+
+        {% if not uploaded %}
+            <form method="post" enctype="multipart/form-data">
+                <input type="file" name="pdfs" multiple required>
+                <input type="submit" value="Upload PDF(s)">
+            </form>
+        {% else %}
+            <div class="uploaded-info">
+                {{ uploaded_count }} PDF{{ 's' if uploaded_count > 1 else '' }} uploaded.
+                <br>
+                {% for pdf_id in pdf_ids %}
+                    <p><b>{{ pdf_id }}:</b> {{ uploaded_files[loop.index0] }}</p>
+                {% endfor %}
+            </div>
+            <form method="post" style="display: inline;">
+                <input type="text" name="question" placeholder="Ask something about the paper(s)..." required>
+                <input type="submit" value="Ask">
+            </form>
+        {% endif %}
+
+        <form method="post" action="/reset" style="display: inline;">
+            <input type="submit" value="Start New Chat" style="background-color: #e74c3c; color: white;">
+        </form>
+
+        {% if chat_history %}
+            <div class="chat-box">
+                {% for entry in chat_history %}
+                    <div class="chat-entry">
+                        <div class="user-msg"><b>You:</b> {{ entry.question }}</div><br>
+                        <div class="ai-msg">
+                            <b>Iris:</b>
+                            <div id="ai-msg-{{ loop.index }}"></div>
+                            <script>
+                                document.getElementById("ai-msg-{{ loop.index }}").innerHTML = marked.parse(`{{ entry.answer | escape | replace('\n', '\\n') }}`);
+                            </script>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
